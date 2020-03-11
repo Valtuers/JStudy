@@ -8,7 +8,7 @@ public class FieldDemo {
     public void fieldInfo() throws NoSuchFieldException {
         Class student = Student.class;
 
-        Field score = student.getField("score");    //获取Field实例
+        Field score = student.getDeclaredField("score");    //获取Field实例
         System.out.println(score.getName());
         System.out.println(score.getType());
         int m = score.getModifiers();
@@ -19,12 +19,18 @@ public class FieldDemo {
     }
 
     public void fieldValue() throws NoSuchFieldException, IllegalAccessException {
-        Student student = new Student(5);
+        Person student = new Student(5);
         Class c = student.getClass();
         Field s = c.getDeclaredField("score");
-        s.setAccessible(true);  // 如果该字段为private，则调用这个方法
-        Object value = s.get(student);
-        System.out.println(value);
+        if(!s.isAccessible()){  // 判断该字段是否允许访问
+            s.setAccessible(true);  // 如果该字段为private，则调用这个方法
+        }
+        // 获取字段的值
+        System.out.println(s.get(student));
+
+        // 设置字段的值
+        s.set(student,10);
+        System.out.println(s.get(student));
     }
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -46,5 +52,9 @@ class Student extends Person {
 
     Student(int score){
         this.score = score;
+    }
+
+    public int getScore(){
+        return score;
     }
 }
