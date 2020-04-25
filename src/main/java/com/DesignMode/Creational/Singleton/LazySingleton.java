@@ -2,14 +2,23 @@ package com.DesignMode.Creational.Singleton;
 
 
 public class LazySingleton {
-    private static LazySingleton lazySingleton = null;
+    private static volatile LazySingleton lazySingleton = null;
 
     private LazySingleton(){
     }
 
     public static LazySingleton getInstance(){
         if(lazySingleton == null){
-            lazySingleton = new LazySingleton();
+            try {
+                Thread.sleep(1000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (LazySingleton.class) {
+                if(lazySingleton == null) {
+                    lazySingleton = new LazySingleton();
+                }
+            }
         }
         return lazySingleton;
     }
@@ -24,8 +33,7 @@ public class LazySingleton {
             new Thread(() -> {
                 int n = 50;
                 while(n > 0){
-                    LazySingleton i = LazySingleton.getInstance();
-                    System.out.println(i);
+                    System.out.println(LazySingleton.getInstance());
                     --n;
                 }
             }).start();
