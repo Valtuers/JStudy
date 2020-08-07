@@ -1,10 +1,10 @@
 package com.IO;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class FileDemo {
     /*
@@ -44,6 +44,25 @@ public class FileDemo {
             System.out.println(fs.getName());
         }
     }
+    /*
+        递归遍历所有文件及其子目录
+     */
+    public void recursionFile(File file, int lev){
+        File[] files = file.listFiles();
+        for(File f : files){
+            int i = lev;
+            while( i > 0){
+                System.out.print("-");
+                --i;
+            }
+            if(f.isDirectory()){
+                System.out.println(f.getName());
+                recursionFile(f, ++lev);
+            }else {
+                System.out.println(f.getName());
+            }
+        }
+    }
 
     public void path() throws IOException {
         Path p = Paths.get(".","test.txt");
@@ -57,11 +76,27 @@ public class FileDemo {
         System.out.println(file.createNewFile());
     }
 
+    /*
+        拷贝文件
+     */
+    public static void readAndCopy(){
+        Path sourcePath = Paths.get("G:\\IntelliJIDEA\\project\\JStudy\\src\\main\\java\\com\\IO\\FileDemo.java");
+        Path destinationPath = Paths.get("G:\\IntelliJIDEA\\project\\JStudy\\src\\main\\java\\com\\IO\\copy1.txt");
+        try {
+            Files.copy(sourcePath,destinationPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         FileDemo fileDemo = new FileDemo();
-        fileDemo.createFile();
+//        fileDemo.createFile();
 //        fileDemo.traversalFile();
 //        fileDemo.path();
-
+//        fileDemo.readAndCopy();
+        fileDemo.recursionFile(new File(".\\"), 0);
     }
 }
